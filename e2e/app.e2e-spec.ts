@@ -1,6 +1,6 @@
 import { MetricModellerPage } from './app.po';
 
-describe('metric-modeller App', function() {
+describe('metric-modeller App', () => {
   let page: MetricModellerPage;
 
   beforeEach(() => {

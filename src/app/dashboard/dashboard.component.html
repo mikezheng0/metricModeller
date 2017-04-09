@@ -1,0 +1,70 @@
+<md-card class="card">
+  <md-card-header>
+    <div class="example-header-image"></div>
+    <md-card-title>Metric Modeller</md-card-title>
+  </md-card-header>
+  <md-card-content>
+    <form class="main-form" #mainForm="ngForm" (ngSubmit)="onSubmit()">
+      <table class="model-table">
+        <tr *ngFor="let q of questions">
+          <td class="left-column">
+            <md-input-container class="wider-input">
+              <input mdInput required type="number" [placeholder]="q.viewValue" [(ngModel)]="q.answer" [name]="q.name">
+            </md-input-container>
+          </td>
+          <td class="right-column">
+            <md-select placeholder="Complexity" required [(ngModel)]="q.complexity" [name]="q.complexityName">
+              <md-option *ngFor="let complexity of complexities" [value]="complexity.value">
+                {{complexity.viewValue}} ({{q.complexityValues[complexity.value]}})
+              </md-option>
+            </md-select>
+          </td>
+        </tr>
+      </table>
+      <button md-raised-button type="submit">Submit</button>
+
+    </form>
+  </md-card-content>
+</md-card>
+<md-card class="card">
+  <md-card-header>
+    <div class="example-header-image"></div>
+    <md-card-title>Results</md-card-title>
+  </md-card-header>
+  <md-card-content>
+    <table class="results-table">
+      <tr>
+        <td>
+          Input Type
+        </td>
+        <td>
+          Complexity
+        </td>
+        <td class="last-column">
+          Totals
+        </td>
+      </tr>
+      <tr *ngFor="let q of questions">
+        <td>
+          {{q.viewValue}}: {{q.answer}}
+        </td>
+        <td>
+          {{q.complexity}} ({{q.complexityValues[q.complexity] || "none"}})
+        </td>
+        <td class="last-column">
+          {{q.complexityValues[q.complexity]*q.answer || 0}} FP
+        </td>
+      </tr>
+      <tr >
+        <td>
+          Total
+        </td>
+        <td>
+        </td>
+        <td class="last-column">
+          {{totalAnswer(questions)}} FP
+        </td>
+      </tr>
+    </table>
+  </md-card-content>
+</md-card>

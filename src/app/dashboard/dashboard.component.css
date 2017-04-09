@@ -1,0 +1,20 @@
+.model-table{
+ width:100%
+}
+.model-table .left-column .wider-input{
+  width:100%;
+}
+.model-table .right-column{
+  text-align: right;
+}
+.card{
+  margin:8px auto;
+  max-width: 900px;
+}
+
+.results-table {
+  width:100%;
+}
+.results-table .last-column{
+  text-align: right
+}
