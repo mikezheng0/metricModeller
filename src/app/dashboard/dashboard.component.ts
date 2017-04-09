@@ -61,6 +61,8 @@ export class DashboardComponent implements OnInit {
     { value: 'average', viewValue: 'Average' },
     { value: 'complex', viewValue: 'Complex' }
   ];
+
+  showResult: boolean = false;
   constructor() {
 
   }
@@ -68,8 +70,9 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
   }
 
-  onSubmit() {
-    console.log("submited");
+  onSubmit(mainForm) {
+    if (mainForm.form.valid)
+      this.showResult = true;
   }
   totalAnswer(questions) {
     let total = 0;
