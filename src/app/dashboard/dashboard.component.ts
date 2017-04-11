@@ -62,6 +62,19 @@ export class DashboardComponent implements OnInit {
     { value: 'complex', viewValue: 'Complex' }
   ];
 
+  projectModes = [
+    {
+      viewValue: "Organic",
+      value: "organic"
+    },{
+      viewValue: "Semi Detached",
+      value: "semidetached"
+    },{
+      viewValue: "Embedded",
+      value: "embedded"
+    }
+  ]
+
   showResult: boolean = false;
   constructor() {
 

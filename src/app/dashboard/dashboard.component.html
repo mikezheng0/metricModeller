@@ -1,10 +1,16 @@
 <md-card class="card">
   <md-card-header>
     <div class="example-header-image"></div>
-    <md-card-title>Metric Modeller</md-card-title>
+    <md-card-title>Metric Inputs</md-card-title>
   </md-card-header>
   <md-card-content>
     <form class="main-form" #mainForm="ngForm" (ngSubmit)="onSubmit(mainForm)">
+      <span>Project Mode:</span>
+      <md-radio-group class="radio-group" required [(ngModel)]="selectedMode" name="modeSelection">
+        <md-radio-button class="radio-button" *ngFor="let mode of projectModes" [value]="mode.value">
+          {{mode.viewValue}}
+        </md-radio-button>
+      </md-radio-group>
       <table class="model-table">
         <tr *ngFor="let q of questions">
           <td class="left-column">
@@ -34,15 +40,15 @@
   <md-card-content>
     <table class="results-table">
       <tr>
-        <td>
+        <th>
           Input Type
-        </td>
-        <td>
+        </th>
+        <th>
           Complexity
-        </td>
-        <td class="last-column">
+        </th>
+        <th class="last-column">
           Totals
-        </td>
+        </th>
       </tr>
       <tr *ngFor="let q of questions">
         <td>
@@ -55,15 +61,13 @@
           {{q.complexityValues[q.complexity]*q.answer || 0}} FP
         </td>
       </tr>
-      <tr >
-        <td>
-          Total
-        </td>
-        <td>
-        </td>
-        <td class="last-column">
-          {{totalAnswer(questions)}} FP
-        </td>
+      <tr>
+        <td colspan="2">Unadjusted Functional Points:</td>
+        <td class="last-column">{{totalAnswer(questions)}} FP</td>
+      </tr>
+      <tr>
+        <td colspan="2">Adjusted Functional Points:</td>
+        <td class="last-column">{{totalAnswer(questions)*0.65}} FP</td>
       </tr>
     </table>
   </md-card-content>

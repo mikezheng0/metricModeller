@@ -13,8 +13,23 @@
 }
 
 .results-table {
+  text-align: left;
   width:100%;
 }
 .results-table .last-column{
-  text-align: right
+  text-align: right;
+}
+.radio-group .radio-button{
+  display: block;
+  padding-top: 8px;
+}
+.radio-group .radio-button:last-of-type{
+  padding-bottom: 8px;
+}
+md-card-content{
+  margin: 0 16px;
+}
+
+md-card-title{
+  font-size: 24px !important;
 }
