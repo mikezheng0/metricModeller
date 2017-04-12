@@ -1,11 +1,8 @@
 <md-tab-group>
   <md-tab label="New Modeller">
     <md-card class="card">
-      <md-card-header>
-        <div class="example-header-image"></div>
-        <md-card-title>Metric Inputs</md-card-title>
-      </md-card-header>
       <md-card-content>
+        <h2>Base Components</h2>
         <form class="main-form" #mainForm="ngForm" (ngSubmit)="onSubmit(mainForm)">
           <span>Project Mode:</span>
           <md-radio-group class="radio-group" required [(ngModel)]="selectedMode" name="modeSelection">
@@ -28,54 +25,150 @@
                 </md-select>
               </td>
             </tr>
+            <tr>
+              <td colspan="3">
+                <md-input-container>
+                   <input mdInput type="text" required placeholder="Language"
+                   name="language"
+                   [(ngModel)]="language"
+                   [mdAutocomplete]="auto"
+                   (ngModelChange)="this.filteredLanguages = filterLanguages(language)">
+                </md-input-container>
+
+                <md-autocomplete #auto="mdAutocomplete" [displayWith]="displayFn">
+                   <md-option *ngFor="let lang of filteredLanguages" [value]="lang">
+                      {{ lang.name }}
+                   </md-option>
+                </md-autocomplete>
+              </td>
+            </tr>
           </table>
+
+          <h2>Individual Components</h2>
+          <div style="padding-bottom:10px;">
+            <md-slide-toggle
+            class="example-margin"
+            [(ngModel)]="selectedUserDocs"
+            (ngModelChange)="this.showResult = false"
+            name="selectedUserDocs">
+              End User Documentation
+            </md-slide-toggle>
+          </div>
+          <div style="padding-bottom:10px;">
+            <md-slide-toggle
+            class="example-margin"
+            [(ngModel)]="selectedTesting"
+            (ngModelChange)="this.showResult = false"
+            name="selectedTesting">
+              Automated Testing
+            </md-slide-toggle>
+          </div>
           <button md-raised-button type="submit">Submit</button>
 
         </form>
       </md-card-content>
     </md-card>
-    <md-card class="card" *ngIf="showResult">
-      <md-card-header>
-        <div class="example-header-image"></div>
-        <md-card-title>Results</md-card-title>
-      </md-card-header>
+    <md-card  class="card" *ngIf="selectedUserDocs && showResult">
       <md-card-content>
+        <h2>End User Documentation</h2>
         <table class="results-table">
           <tr>
-            <th>
-              Input Type
-            </th>
-            <th>
-              Complexity
-            </th>
-            <th class="last-column">
-              Totals
-            </th>
-          </tr>
-          <tr *ngFor="let q of questions">
-            <td>
-              {{q.viewValue}}: {{q.answer}}
-            </td>
-            <td>
-              {{q.complexity}} ({{q.complexityValues[q.complexity] || "none"}})
-            </td>
-            <td class="last-column">
-              {{q.complexityValues[q.complexity]*q.answer || 0}} FP
-            </td>
+            <th>Input Type</th>
+            <th class="last-column">Totals</th>
           </tr>
           <tr>
-            <td colspan="2">Unadjusted Functional Points:</td>
-            <td class="last-column">{{totalAnswer(questions)}} FP</td>
+            <td>{{calculatedValues.questions[0].question}}: {{calculatedValues.questions[0].answer}} </td>
+            <td class="last-column">{{calculatedValues.questions[0].total || 0}} FP <span style="color:red;">(+2 FP)</span></td>
           </tr>
           <tr>
-            <td colspan="2">Adjusted Functional Points:</td>
-            <td class="last-column">{{totalAnswer(questions)*0.65}} FP</td>
+            <td>{{calculatedValues.questions[2].question}}: {{calculatedValues.questions[2].answer}} </td>
+            <td class="last-column">{{calculatedValues.questions[2].total || 0}} FP <span style="color:red;">(+2 FP)</span></td>
+          </tr>
+          <tr>
+            <td>{{calculatedValues.questions[4].question}}: {{calculatedValues.questions[4].answer}} </td>
+            <td class="last-column">{{calculatedValues.questions[4].total || 0}} FP <span style="color:red;">(+2 FP)</span></td>
+          </tr>
+          <tr>
+            <td>Unadjusted Functional Points:</td>
+            <td class="last-column">{{calculatedValues.total| number : '1.0-2'}} FP</td>
+          </tr>
+          <tr>
+            <td>Adjusted Functional Points:</td>
+            <td class="last-column">{{calculatedValues.total*0.66| number : '1.2-2'}} FP</td>
           </tr>
         </table>
       </md-card-content>
     </md-card>
-  </md-tab>
-  <md-tab label="History">
+    <md-card  class="card" *ngIf="selectedTesting && showResult">
+      <md-card-content>
+        <h2>Automated Testing</h2>
+        <table class="results-table">
+          <tr>
+            <td>Unadjusted Functional Points:</td>
+            <td class="last-column">{{calculatedValues.total| number : '1.0-2'}} FP
+            <span style="color:green">(-{{calculatedValues.adjustedTotal| number : '1.0-2'}} FP)</span>
+            </td>
+          </tr>
+          <tr>
+            <td>Adjusted Functional Points:</td>
+            <td class="last-column">{{calculatedValues.total*0.66| number : '1.2-2'}} FP</td>
+          </tr>
+        </table>
+      </md-card-content>
+    </md-card>
+    <md-card class="card" *ngIf="showResult">
+      <md-card-content>
+        <h2>Functional Points Calculation</h2>
+        <table class="results-table">
+          <tr>
+            <th>Input Type</th>
+            <th>Complexity</th>
+            <th class="last-column">Totals</th>
+          </tr>
+          <tr *ngFor="let q of calculatedValues.questions">
+            <td>{{q.question}}: {{q.answer}}</td>
+            <td>{{q.complexity}} ({{q.complexityValue || "none"}})</td>
+            <td class="last-column">{{q.total || 0}} FP</td>
+          </tr>
+          <tr>
+            <td colspan="2">Unadjusted Functional Points:</td>
+            <td class="last-column">{{calculatedValues.total| number : '1.0-2'}} FP</td>
+          </tr>
+          <tr>
+            <td colspan="2">Adjusted Functional Points:</td>
+            <td class="last-column">{{calculatedValues.total*0.66| number : '1.2-2'}} FP</td>
+          </tr>
+        </table>
 
+        <h2>Final Results Calculation</h2>
+
+        <table class="results-table">
+          <tr>
+            <th>Field</th>
+            <th class="last-column">Value</th>
+          </tr>
+          <tr>
+            <td>Lines of Code</td>
+            <td class="last-column">{{calculatedValues.linesOfCode | number : '1.0-0'}} Lines</td>
+          </tr>
+          <tr>
+            <td>Effort Applied (E)</td>
+            <td class="last-column">{{calculatedValues.effortApplied | number : '1.1-2'}}</td>
+          </tr>
+          <tr>
+            <td>Development Time (Months):</td>
+            <td class="last-column">{{calculatedValues.developmentTime | number : '1.1-2'}} Months</td>
+          </tr>
+          <tr>
+            <td>People Required:</td>
+            <td class="last-column">{{calculatedValues.peopleRequired | number : '1.1-2'}}</td>
+          </tr>
+          <tr>
+            <td>Cost</td>
+            <td class="last-column">{{calculatedValues.cost | currency:'USD':true:'1.2-2'}}</td>
+          </tr>
+        </table>
+      </md-card-content>
+    </md-card>
   </md-tab>
 </md-tab-group>

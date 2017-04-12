@@ -3,3 +3,7 @@ body {
   background-color: rgb(250, 250, 250);
   margin:0;
 }
+
+.mat-tab-body{
+  overflow-y:hidden !important;
+}
